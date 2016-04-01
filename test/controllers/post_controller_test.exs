@@ -107,7 +107,7 @@ defmodule Pxblog.PostControllerTest do
     assert conn.halted
   end
 
-  test "redirets when trying to edit a post for a different user", %{conn: conn, user: user} do
+  test "redirets when trying to edit a post for a different user", %{conn: conn, user: _user} do
     other_user = User.changeset(%User{},
       %{email: "test2@test.com",
         username: "test2",
