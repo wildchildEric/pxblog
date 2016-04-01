@@ -15,13 +15,10 @@ defmodule Pxblog.PostControllerTest do
   end
 
   defp create_user do
-    User.changeset(%User{},
-      %{
-        email: "test@test.com",
-        username: "test",
-        password: "test",
-        password_confirmation: "test"
-      })
+    User.changeset(%User{},%{email: "test@test.com",
+                            username: "test",
+                            password: "test",
+                            password_confirmation: "test"})
     |> Repo.insert
   end
 
