@@ -18,7 +18,7 @@ defmodule Pxblog.User do
     belongs_to :role, Pxblog.Role
   end
 
-  @required_fields ~w(username email password password_confirmation)
+  @required_fields ~w(username email password password_confirmation role_id)
   @optional_fields ~w()
 
   @doc """
