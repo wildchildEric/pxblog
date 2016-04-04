@@ -4,7 +4,10 @@ defmodule Pxblog.UserControllerTest do
   alias Pxblog.User
   alias Pxblog.TestHelper
 
-  @valid_create_attrs %{email: "test@test.com", password: "test1234", password_confirmation: "test1234", username: "testuser"}
+  @valid_create_attrs %{email: "test@test.com", 
+                        password: "test1234",
+                        password_confirmation: "test1234",
+                        username: "testuser"}
   @valid_attrs %{email: "test@test.com", username: "testuser"}
   @invalid_attrs %{}
 
@@ -27,7 +30,11 @@ defmodule Pxblog.UserControllerTest do
       password_confirmation: "test"
       })
 
-    {:ok, conn: conn, user_role: user_role, admin_role: admin_role, nonadmin_user: nonadmin_user, admin_user: admin_user}
+    {:ok, conn: conn, 
+          user_role: user_role,
+          admin_role: admin_role, 
+          nonadmin_user: nonadmin_user, 
+          admin_user: admin_user}
   end
 
   defp valid_create_attrs(role) do
