@@ -20,7 +20,7 @@ defmodule Pxblog.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    roles = Ropo.all(Role)
+    roles = Repo.all(Role)
     changeset = User.changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do

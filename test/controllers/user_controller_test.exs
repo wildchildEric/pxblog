@@ -3,6 +3,7 @@ defmodule Pxblog.UserControllerTest do
 
   alias Pxblog.User
   alias Pxblog.TestHelper
+  alias Pxblog.Factory
 
   @valid_create_attrs %{email: "test@test.com", 
                         password: "test1234",
@@ -12,24 +13,13 @@ defmodule Pxblog.UserControllerTest do
   @invalid_attrs %{}
 
   setup do
+    user_role     = Factory.create(:role)
+    nonadmin_user = Factory.create(:user, role: user_role)
+
+    admin_role    = Factory.create(:role, admin: true)
+    admin_user    = Factory.create(:user, role: admin_role)
+
     conn = conn()
-    {:ok, user_role}      = TestHelper.create_role(%{name: "user", admin: false})
-    {:ok, nonadmin_user}  = TestHelper.create_user(user_role,%{
-      email: "nonadmin@test.com",
-      username: "nonadmin",
-      password: "test",
-      password_confirmation: "test"
-      })
-
-
-    {:ok, admin_role} = TestHelper.create_role(%{name: "admin", admin: true})
-    {:ok, admin_user} = TestHelper.create_user(admin_role,%{
-      email: "admin@test.com",
-      username: "admin",
-      password: "test",
-      password_confirmation: "test"
-      })
-
     {:ok, conn: conn, 
           user_role: user_role,
           admin_role: admin_role, 
