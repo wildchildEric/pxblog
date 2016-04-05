@@ -5,6 +5,7 @@ defmodule Pxblog.Post do
     field :title, :string
     field :body, :string
     belongs_to :user, Pxblog.User
+    has_many :comments, Pxblog.Comment
     timestamps
   end
 
