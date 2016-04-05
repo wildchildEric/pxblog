@@ -12,8 +12,14 @@ defmodule Pxblog.PostControllerTest do
     role = Factory.create(:role)
     user = Factory.create(:user, role: role)
     post = Factory.create(:post, user: user)
+
+    admin_role = Factory.create(:role, admin: true)
+    admin_user = Factory.create(:user, role: admin_role)
+
+    other_user = Factory.create(:user, role: role)
+
     conn = conn() |> login_user(user)
-    {:ok,conn: conn, user: user, role: role, post: post}
+    {:ok, conn: conn, user: user, role: role, post: post, admin: admin_user, other_user: other_user}
   end
 
   defp login_user(conn, user) do
@@ -21,6 +27,17 @@ defmodule Pxblog.PostControllerTest do
       username: user.username,
       password: user.password
     }
+  end
+
+  defp logout_user(conn, user) do
+    delete conn, session_path(conn, :delete, user)
+  end
+
+  defp build_post(user) do
+    changeset = user
+    |> build_assoc(:posts)
+    |> Post.changeset(@valid_attrs)
+    Repo.insert!(changeset)
   end
 
   test "lists all entries on index", %{conn: conn, user: user} do
@@ -44,9 +61,32 @@ defmodule Pxblog.PostControllerTest do
     assert html_response(conn, 200) =~ "New post"
   end
 
-  test "shows chosen resource", %{conn: conn, user: user, post: post} do
-    conn = get conn, user_post_path(conn, :show, user, post)
+  test "when logged in as the author, shows chosen resource with author flag set to true", %{conn: conn, user: user} do
+    post = build_post(user)
+    conn = login_user(conn, user) |> get(user_post_path(conn, :show, user, post))
     assert html_response(conn, 200) =~ "Show post"
+    assert conn.assigns[:author_or_admin]
+  end
+
+  test "when logged in as an admin, shows chosen resource with author flag set to true", %{conn: conn, user: user, admin: admin} do
+    post = build_post(user)
+    conn = login_user(conn, admin) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    assert conn.assigns[:author_or_admin]
+  end
+
+  test "when not logged in, shows chosen resource with author flag set to false", %{conn: conn, user: user} do
+    post = build_post(user)
+    conn = logout_user(conn, user) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    refute conn.assigns[:author_or_admin]
+  end
+
+  test "when logged in as a different user, shows chosen resource with author flag set to false", %{conn: conn, user: user, other_user: other_user} do
+    post = build_post(user)
+    conn = login_user(conn, other_user) |> get(user_post_path(conn, :show, user, post))
+    assert html_response(conn, 200) =~ "Show post"
+    refute conn.assigns[:author_or_admin]
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn, user: user} do
