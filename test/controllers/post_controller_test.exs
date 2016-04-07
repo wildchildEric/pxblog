@@ -42,7 +42,7 @@ defmodule Pxblog.PostControllerTest do
 
   test "lists all entries on index", %{conn: conn, user: user} do
     conn = get conn, user_post_path(conn, :index, user)
-    assert html_response(conn, 200) =~ "Listing posts"
+    assert html_response(conn, 200) =~ "Posts"
   end
 
   test "renders form for new resources", %{conn: conn, user: user} do
