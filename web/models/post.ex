@@ -21,7 +21,7 @@ defmodule Pxblog.Post do
   def changeset(model, params \\ :empty) do
     model
     |> cast(params, @required_fields, @optional_fields)
-    # |> strip_unsafe_body(params)
+    |> strip_unsafe_body(params)
   end
 
   defp strip_unsafe_body(model, %{"body" => nil}) do
